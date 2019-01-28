@@ -5,6 +5,8 @@
 #include <fstream>
 #include <random>
 #include <limits>
+#include <functional> 
+#include <algorithm>
 
 #include "point.h"
 #include "cluster.h"
@@ -14,8 +16,7 @@ using namespace std;
 
 
 
-
-void formClusters(vector<Point> &points, int K){
+void formClusters(vector<Point> points, int d, int K, int maxIterations){
 	// Step-1: Get k random points and make them clusters centers
 
 	random_device rd; //obtain random number from hardware
@@ -23,60 +24,125 @@ void formClusters(vector<Point> &points, int K){
 	uniform_int_distribution<> distr(0, K-1);
 
 	vector<Cluster> clusters; //vector of clusters
+	vector<Point> init = points;
 
 	for(int i=0; i<K; i++){
-		Cluster c(i, points.at(distr(eng)));
+		int tmp = distr(eng);
+
+		Cluster c(i, init.at(tmp));
 		clusters.push_back(c);
+		
+		init.erase(init.begin() + tmp);
 	}
 
 	// Step-2: fill rest of the points into the formed clusters
 	for(int i=0; i<points.size(); i++){
-		Point pointMark = points.get(i);
-		
-		vector<tuple<int, float>> closestClusterInfo;
-		for(int j=0; j<clusters.size(); j++){
-			float dist = pointMark.eucledianDistanceFrom(clusters.at(j).getCenter());
-			closestClusterInfo.push_back(make_tuple(clusters.at(j).getClusterID(), dist));
-		}
+		Point pointMark = points.at(i);
 
 	    float maxVal = numeric_limits<float>::max();
 		int closestClusterID = -1;
-		for(int j=0; j<closestClusterInfo.size(); j++){
-			if(maxVal > get<1>(closestClusterInfo.at(j))){
-				closestClusterID = get<0>(closestClusterInfo.at(j));
-				maxVal = get<1>(closestClusterInfo.at(j));
+	
+		for(int j=0; j<clusters.size(); j++){
+			float dist = pointMark.eucledianDistanceFrom((clusters.at(j)).getCenter());
+			if(maxVal > dist){
+				maxVal = dist;
+				closestClusterID = (clusters.at(j)).getClusterID();
 			}
 		}
 
-		clusters.at(closestClusterID).addPointToCluster(pointMark);
-		pointMark.setCluster(closestClusterID);
+		pointMark.setClusterID(closestClusterID);
+		(clusters.at(closestClusterID)).addPointToCluster(pointMark);
 	}
+
+	// for(int i=0; i<clusters.size();i++){
+	// 	(clusters.at(i)).print();
+	// }
+
 	//filled all the points in the closest cluster
 
 	// plot here
 
 	//Step-3 calculate mean center of each cluster
-	// change centers
-	// iterate over all points readjust their parent clusters
 
+
+	// calculated mean of every cluster
+	// now iterate over all points and refill points into cluster
+
+	vector<Point> pointsWithID;
 	for(int i=0; i<clusters.size(); i++){
-		vector<Point> clusPoints = (clusters.get(i)).getAllPoints();
-		float m // it can be d dimensional vector change it from the beginning
-		for(int j=0; j<clusPoints.size(); j++){
-
+		vector<Point> temp = (clusters.at(i)).getAllPoints();
+		for(int j=0; j<temp.size(); j++){
+			pointsWithID.push_back(temp.at(j));
 		}
 	}
 
+	// for(int q=0; q<pointsWithID.size(); q++){
+	// 	(pointsWithID.at(q)).print();
+	// }
 
+	int pointsMoved = 1;
+	while(maxIterations > 0 && pointsMoved != 0){
+		pointsMoved = 0;
+
+		for(int i=0; i<clusters.size(); i++){
+			vector<Point> clusPoints = (clusters.at(i)).getAllPoints();
+			vector<int> sum(d, 0);
+
+			// for(int q=0; q<clusPoints.size(); q++){
+			// 	(clusPoints.at(q)).print();
+			// }
+
+			for(int j=0; j<clusPoints.size(); j++){
+				for(int k=0; k<d; k++){
+					sum.at(k) += ((clusPoints.at(j)).getValue()).at(k);
+				}
+				vector<int> temp = (clusPoints.at(j)).getValue();
+			}
+			for(int k=0; k<sum.size(); k++){
+				sum.at(k)/=d;
+			}
+
+			(clusters.at(i)).makeCenter(Point(-1, sum));
+		}
+
+		for(int i=0; i<pointsWithID.size(); i++){
+			Point pointMark = pointsWithID.at(i);
+
+			int oldClusterID = pointMark.getClusterID();
+		
+		    float maxVal = numeric_limits<float>::max();
+			int closestClusterID = -1;
+
+			for(int j=0; j<clusters.size(); j++){
+				float dist = pointMark.eucledianDistanceFrom((clusters.at(j)).getCenter());
+				if(maxVal > dist){
+					maxVal = dist;
+					closestClusterID = (clusters.at(j)).getClusterID();
+				}
+			}
+
+			if(closestClusterID != oldClusterID){
+				// change it
+				(clusters.at(oldClusterID)).removePointFromCluster(pointMark.getID());
+				(clusters.at(closestClusterID)).addPointToCluster(pointMark);
+				pointMark.setClusterID(closestClusterID);
+				pointsMoved = pointsMoved + 1;
+			}
+			// otherwise remains same
+		}
+
+		maxIterations = maxIterations - 1;
+	}
 
 }
 
 int main(int argc, char *argv[]){
+	int d = 3;
 	int totalPoints = 9;
-	int k = 3;
-	int maxIterations = 5;
+	int K = 3;
+	int maxIterations = 20;
 
-	if(k > totalPoints){
+	if(K > totalPoints){
 		return -1;
 	}
 
@@ -87,11 +153,17 @@ int main(int argc, char *argv[]){
 	for(int i=0; i<totalPoints; i++){
 		int a, b, c;
 		file>>a>>b>>c;
-		points.push_back(Point(i, make_tuple((int)a, (int)b, (int)c)));
+		vector<int> vec;
+		vec.push_back((int)a);
+		vec.push_back((int)b);
+		vec.push_back((int)c);
+		points.push_back(Point(i, vec));
 	}
 
 	//got all the points in the vector
 
 	//form clusters
-	formClusters(points);
+	formClusters(points, d, K, maxIterations);
+
+	return 0;
 }
