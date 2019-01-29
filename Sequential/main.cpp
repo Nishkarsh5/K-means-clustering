@@ -15,8 +15,6 @@
 using namespace std;
 
 
-
-
 void formClusters(vector<Point> &points, int d, int K, int maxIterations){
 	// Step-1: Get k random points and make them clusters centers
 
@@ -102,7 +100,7 @@ void formClusters(vector<Point> &points, int d, int K, int maxIterations){
 
 		for(int q=0; q<clus.size(); q++){
 			// cout<<i<<" "<<q<<" "<<clus.size()<<endl;
-			vector<int> temp = (clus.at(q))->getValue();
+			vector<float> temp = (clus.at(q))->getValue();
 			myfile<<temp.at(0)<<","<<temp.at(1)<<","<<temp.at(2)<<","<<i<<endl;
 		}
 	}
@@ -115,7 +113,7 @@ int main(int argc, char *argv[]){
 	int d = 3;
 	int totalPoints = 1000000;
 	int K = 7;
-	int maxIterations = 1;
+	int maxIterations = 10;
 
 	if(K > totalPoints){
 		return -1;
@@ -126,12 +124,12 @@ int main(int argc, char *argv[]){
 	vector<Point> points;
 
 	for(int i=0; i<totalPoints; i++){
-		int a, b, c;
+		float a, b, c;
 		file>>a>>b>>c;
-		vector<int> vec;
-		vec.push_back(abs((int)a*50));
-		vec.push_back(abs((int)b*50));
-		vec.push_back(abs((int)c*50));
+		vector<float> vec;
+		vec.push_back(a);
+		vec.push_back(b);
+		vec.push_back(c);
 		points.push_back(Point(i, vec));
 	}
 

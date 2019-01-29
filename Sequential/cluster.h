@@ -49,7 +49,7 @@ public:
 	}
 
 	void makeCentroidCenter(){ //take average of all values at make it center
-		vector<int> sum(dim, 0);
+		vector<float> sum(dim, 0.0);
 
 		for(int i=0; i<points.size(); i++){
 			for(int k=0; k<dim; k++){
