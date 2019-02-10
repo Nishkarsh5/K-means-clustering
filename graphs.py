@@ -50,7 +50,43 @@ with open("values.yml", 'r') as stream:
 
 
 # ------------Efficiency vs Size of the data
+# threads = [1, 2, 4, 6, 8, 10, 12, 14, 16] 
+
+# size = []
+# j=0
+# for i in range(10):
+# 	j = j+10000
+# 	size.append(j)
+
+# Ts = values['seq']
+# TsdivTp = []
+
+# for i in threads:
+# 	temp = []
+# 	Tp = values['omp'][i]
+# 	for j in range(len(Tp)):
+# 		temp.append(Ts[j]/(Tp[j]*i))
+# 	TsdivTp.append(temp)
+
+# fig = plt.figure(figsize=(14, 6))
+# plt.xlabel("Size of the Dataset")
+# plt.ylabel("Efficiency")
+# plt.title("Efficiency vs Size of the Dataset")
+# for i in range(len(threads)):
+#     plt.plot(size, TsdivTp[i],label = 'threads %s'%threads[i])
+
+# plt.ylim(bottom=0)  # this line
+# plt.legend()
+# plt.tight_layout()
+
+# # plt.show()
+# fig.savefig('temp4.png') 
+
+
+
+# /--------------------------SpeedUp vs. No of threads (per Dataset)
 threads = [1, 2, 4, 6, 8, 10, 12, 14, 16] 
+Ts = values['seq']
 
 size = []
 j=0
@@ -58,26 +94,57 @@ for i in range(10):
 	j = j+10000
 	size.append(j)
 
-Ts = values['seq']
-TsdivTp = []
-
-for i in threads:
-	temp = []
-	Tp = values['omp'][i]
-	for j in range(len(Tp)):
-		temp.append(Ts[j]/(Tp[j]*i))
-	TsdivTp.append(temp)
+indexByThread = []
+for j in range(len(size)):
+	indexByThread.append([])
+	for i in threads:
+		indexByThread[j].append(Ts[j]/values['pthr'][i][j])
 
 fig = plt.figure(figsize=(14, 6))
-plt.xlabel("Size of the Dataset")
-plt.ylabel("Efficiency")
-plt.title("Efficiency vs Size of the Dataset")
-for i in range(len(threads)):
-    plt.plot(size, TsdivTp[i],label = 'threads %s'%threads[i])
+plt.xlabel("Number of Threads")
+plt.ylabel("Speed Up")
+plt.title("Speed Up vs Number of Threads")
 
-plt.ylim(bottom=0)  # this line
+for i in range(len(size)):
+    plt.plot(threads, indexByThread[i], label = 'datapoints %s'%size[i])
+
+# plt.ylim(bottom=0)  # this line
 plt.legend()
 plt.tight_layout()
 
 # plt.show()
-fig.savefig('temp4.png') 
+fig.savefig('temp5.png')
+
+
+# ---------------------------------Efficiency
+
+# /--------------------------Efficiency vs. No of threads (per Dataset)
+threads = [1, 2, 4, 6, 8, 10, 12, 14, 16] 
+Ts = values['seq']
+
+size = []
+j=0
+for i in range(10):
+	j = j+10000
+	size.append(j)
+
+indexByThread = []
+for j in range(len(size)):
+	indexByThread.append([])
+	for i in threads:
+		indexByThread[j].append(Ts[j]/(values['pthr'][i][j]*i))
+
+fig = plt.figure(figsize=(14, 6))
+plt.xlabel("Number of Threads")
+plt.ylabel("Efficiency")
+plt.title("Efficiency vs Number of Threads")
+
+for i in range(len(size)):
+    plt.plot(threads, indexByThread[i], label = 'datapoints %s'%size[i])
+
+# plt.ylim(bottom=0)  # this line
+plt.legend()
+plt.tight_layout()
+
+# plt.show()
+fig.savefig('temp6.png')
