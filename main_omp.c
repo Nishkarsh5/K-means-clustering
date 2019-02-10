@@ -69,7 +69,7 @@ int main(int argc, char const *argv[])
 	centroids_out (argv[5], K, num_iterations, centroids);
 
 	computation_time = ((double) (end_time - start_time));
-	printf("Time Taken: %lf \n", computation_time);
+	printf("%lf\n", computation_time);
 	
 	return 0;
 }
