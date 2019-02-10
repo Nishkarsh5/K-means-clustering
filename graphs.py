@@ -98,53 +98,53 @@ indexByThread = []
 for j in range(len(size)):
 	indexByThread.append([])
 	for i in threads:
-		indexByThread[j].append(Ts[j]/values['pthr'][i][j])
+		indexByThread[j].append(Ts[j]/values['omp'][i][j])
 
 fig = plt.figure(figsize=(14, 6))
-plt.xlabel("Number of Threads")
-plt.ylabel("Speed Up")
-plt.title("Speed Up vs Number of Threads")
+plt.xlabel("Number of Threads ->")
+plt.ylabel("Speed Up ->")
+plt.title("Speed Up vs Number of Threads (For `OpenMP`)")
 
 for i in range(len(size)):
-    plt.plot(threads, indexByThread[i], label = 'datapoints %s'%size[i])
+    plt.plot(threads, indexByThread[i], label = '%s Datapoints'%size[i])
 
 # plt.ylim(bottom=0)  # this line
 plt.legend()
 plt.tight_layout()
 
 # plt.show()
-fig.savefig('temp5.png')
+fig.savefig('speedUp vs noOfThreads (OMP).png')
 
 
 # ---------------------------------Efficiency
 
 # /--------------------------Efficiency vs. No of threads (per Dataset)
-threads = [1, 2, 4, 6, 8, 10, 12, 14, 16] 
-Ts = values['seq']
+# threads = [1, 2, 4, 6, 8, 10, 12, 14, 16] 
+# Ts = values['seq']
 
-size = []
-j=0
-for i in range(10):
-	j = j+10000
-	size.append(j)
+# size = []
+# j=0
+# for i in range(10):
+# 	j = j+10000
+# 	size.append(j)
 
-indexByThread = []
-for j in range(len(size)):
-	indexByThread.append([])
-	for i in threads:
-		indexByThread[j].append(Ts[j]/(values['pthr'][i][j]*i))
+# indexByThread = []
+# for j in range(len(size)):
+# 	indexByThread.append([])
+# 	for i in threads:
+# 		indexByThread[j].append(Ts[j]/(values['pthr'][i][j]*i))
 
-fig = plt.figure(figsize=(14, 6))
-plt.xlabel("Number of Threads")
-plt.ylabel("Efficiency")
-plt.title("Efficiency vs Number of Threads")
+# fig = plt.figure(figsize=(14, 6))
+# plt.xlabel("Number of Threads ->")
+# plt.ylabel("Efficiency ->")
+# plt.title("Efficiency vs Number of Threads (For `PThreads`)")
 
-for i in range(len(size)):
-    plt.plot(threads, indexByThread[i], label = 'datapoints %s'%size[i])
+# for i in range(len(size)):
+#     plt.plot(threads, indexByThread[i], label = '%s Datapoints'%size[i])
 
-# plt.ylim(bottom=0)  # this line
-plt.legend()
-plt.tight_layout()
+# # plt.ylim(bottom=0)  # this line
+# plt.legend()
+# plt.tight_layout()
 
-# plt.show()
-fig.savefig('temp6.png')
+# # plt.show()
+# fig.savefig('Efficiency vs noOfThreads (PThreads).png')
