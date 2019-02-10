@@ -48,7 +48,7 @@ void kmeans_sequential(int N,
 					int* num_iterations
 					){
 
-*num_iterations = 50;
+int max_num_iterations=1000;
 
 vector<tuple<int, int, int>> dataPoints;
 vector<vector<int>> clusterIndex(K);
@@ -59,11 +59,10 @@ for(int i=0; i<N; i++){
 	dataPoints.push_back(make_tuple(data_points[i*3], data_points[i*3+1], data_points[i*3+2]));
 }
 
-// initialise K random points as cluster centers
+// initialise starting K points as cluster centers
 vector<tuple<float, float, float>> tempVec0;
 for(int i=0; i<K; i++){
-	int r = rand() % (N+1);
-	tempVec0.push_back(make_tuple((float)get<0>(dataPoints.at(r)), (float)get<1>(dataPoints.at(r)), (float)get<2>(dataPoints.at(r))));
+	tempVec0.push_back(make_tuple((float)get<0>(dataPoints.at(i)), (float)get<1>(dataPoints.at(i)), (float)get<2>(dataPoints.at(i))));
 }
 clusterPoints.push_back(tempVec0);
 
@@ -75,7 +74,7 @@ clusterPoints.push_back(tempVec0);
 //loop and fill baby
 bool convergenceFlag = false;
 int iter=0;
-while(iter<*num_iterations){
+while(iter<max_num_iterations){
 	//loop over points and fill into cluster
 	for(int i=0; i<clusterIndex.size(); i++){
 		clusterIndex.at(i).clear();
@@ -134,6 +133,7 @@ while(iter<*num_iterations){
 // cout<<"\n";
 
 // cout<<"[!] Iterations Used: "<<iter<<endl;
+*num_iterations = iter;
 *data_point_cluster = (int*)malloc(sizeof(int)*(N*4));
 *centroids = (float*)malloc(sizeof(float)*(K*3*(*num_iterations+1)));
 

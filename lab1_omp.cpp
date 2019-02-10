@@ -15,6 +15,8 @@ pthread_mutex_t lock;
 int iter;
 int numDataPoints;
 int numThreads;
+int max_num_iterations = 1000;
+
 
 vector<tuple<int, int, int>> dataPoints; //collection of datapoints
 vector<vector<int>> clusterIndex; //indices of cluster, each cluster vector contains the indices of data points 
@@ -92,7 +94,6 @@ void kmeans_omp(int num_threads, int N, int K, int* data_points, int** data_poin
 	// putting values into global variables
 	numThreads = num_threads; 
 	numDataPoints = N;
-	*num_iterations = 100;
 
 	// cout<<"num of iter: "<<*num_iterations<<endl;
 	// cout<<"num threads" <<numThreads<<endl;
@@ -206,7 +207,7 @@ void kmeans_omp(int num_threads, int N, int K, int* data_points, int** data_poin
 	
 		// cout<<"[*] Change Amount: "<<changeInCentroids<<endl;
 		iter += 1;
-		if(iter > *num_iterations){
+		if(iter > max_num_iterations){
 			break;
 		}
 		// cout<<"iter "<<iter<<endl;
@@ -222,6 +223,7 @@ void kmeans_omp(int num_threads, int N, int K, int* data_points, int** data_poin
 	// cout<<"[!] Iterations Used: "<<iter<<endl;
 	*data_point_cluster = (int*)malloc(sizeof(int)*(N*4));
 	*centroids = (float*)malloc(sizeof(float)*(K*3*(iter+2)));
+	*num_iterations = iter;
 
 
 // put calculated values back into the pointers to continue the already coded post-processing
