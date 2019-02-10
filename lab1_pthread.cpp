@@ -144,7 +144,7 @@ void kmeans_pthread(int num_threads, int N, int K, int* data_points, int** data_
 	// }
 	// printClusterCentroids(clusterPoints.at(iter));
 	//------------------------------------------- rest thread work ---------------------------------
-	while(true){
+	while(iter<max_num_iterations){
 		// assign each thread to do some work with divided data points
 		for(int i=0; i<clusterIndex.size(); i++){
 			clusterIndex.at(i).clear();
@@ -205,13 +205,13 @@ void kmeans_pthread(int num_threads, int N, int K, int* data_points, int** data_
 			changeInCentroids += getDistance(clusterPoints.at(iter).at(i), clusterPoints.at(iter+1).at(i));
 		}
 		// cout<<"amount "<<changeInCentroids<<"\n";
+		iter += 1;
 		if(changeInCentroids < 0.01){
 			// cout<<"[*] Converged after "<<iter<<" iterations\n";
 			break;
 		}
 	
 		// cout<<"[*] Change Amount: "<<changeInCentroids<<endl;
-		iter += 1;
 		if(iter > max_num_iterations){
 			break;
 		}
@@ -226,9 +226,9 @@ void kmeans_pthread(int num_threads, int N, int K, int* data_points, int** data_
 	// cout<<"\n";
 
 	// cout<<"[!] Iterations Used: "<<iter<<endl;
-	*data_point_cluster = (int*)malloc(sizeof(int)*(N*4));
-	*centroids = (float*)malloc(sizeof(float)*(K*3*(iter+2)));
 	*num_iterations = iter;
+	*data_point_cluster = (int*)malloc(sizeof(int)*(N*4));
+	*centroids = (float*)malloc(sizeof(float)*(K*3*(iter+1)));
 
 
 // put calculated values back into the pointers to continue the already coded post-processing
