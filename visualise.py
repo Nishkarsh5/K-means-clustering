@@ -8,8 +8,9 @@ infile=reader(open(argv[1]),delimiter=" ");
 data=np.array([[int(a) for a in b] for b in infile])
 
 fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1, axisbg="1.0")
-ax = fig.gca(projection='3d')
+#ax = fig.add_subplot(1, 1, 1, axisbg="1.0")
+#ax = fig.gca(projection='3d')
+ax = fig.add_subplot(111, projection='3d')
 ax.scatter(data[:,0],data[:,1],data[:,2],c=data[:,3])
 plt.show()
 
