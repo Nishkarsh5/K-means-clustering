@@ -1,9 +1,8 @@
 #include "lab1_io.h"
 #include "lab1_pthread.h"
-
+#include <omp.h>
 #include <stdlib.h>
 #include <time.h>
-#include <omp.h>
 
 /*
 	Arguments:
@@ -52,7 +51,7 @@ int main(int argc, char const *argv[])
 	*/
 	dataset_in (argv[3], &N, &data_points);
 
-	start_time = omp_get_wtime();
+	start_time = omp_get_wtime();;
 	// /*
 	// 	*****************************************************
 	// 		TODO -- You must implement this function
@@ -68,8 +67,15 @@ int main(int argc, char const *argv[])
 	clusters_out (argv[4], N, cluster_points);
 	centroids_out (argv[5], K, num_iterations, centroids);
 
-	computation_time = ((double) (end_time - start_time));
-	printf("%lf\n", computation_time);
+	// computation_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+	computation_time = end_time - start_time;
+	printf("Time Taken: %lf \n", computation_time);
+	FILE *fout = fopen("time_pthread.txt", "a");
+	
+	fprintf(fout, "%f\n", computation_time); 
+
+
+	fclose(fout);
 	
 	return 0;
 }

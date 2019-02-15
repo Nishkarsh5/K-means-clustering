@@ -118,12 +118,12 @@ while(iter<max_num_iterations){
 	for(int i=0; i<(clusterPoints.at(iter)).size(); i++){
 		changeInCentroids += getDistance(clusterPoints.at(iter).at(i), clusterPoints.at(iter+1).at(i));
 	}
+	iter+=1;
 	if(changeInCentroids < 0.01){
 		// cout<<"[*] Converged at "<<iter<<" iterations\n";
 		break;
 	}
 	// cout<<"[*] Change Amount: "<<changeInCentroids<<endl;
-	iter+=1;
 }
 
 // cout<<"[*] Formed Cluster Sizes: \n";
@@ -135,7 +135,7 @@ while(iter<max_num_iterations){
 // cout<<"[!] Iterations Used: "<<iter<<endl;
 *num_iterations = iter;
 *data_point_cluster = (int*)malloc(sizeof(int)*(N*4));
-*centroids = (float*)malloc(sizeof(float)*(K*3*(*num_iterations+1)));
+*centroids = (float*)malloc(sizeof(float)*(K*3*(iter+1)));
 
 
 // put calculated values back into the pointers to continue the already coded post-processing

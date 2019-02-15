@@ -4,11 +4,24 @@ from mpl_toolkits.mplot3d import Axes3D
 import random, numpy as np
 from sklearn.utils import shuffle
 
+<<<<<<< HEAD
 num_range = 800             # base range of data point cordinates
 total_points = 10000          # total number of data points
 noise = 100                  # data points that are not generated near a blob_center
 K = 3                      # number of blobs
 N = total_points - noise    # data points to be generated near blob_center
+=======
+import os
+os.mkdir('./dataset')
+sizes = [10000, 50000, 100000, 200000, 500000, 700000, 1000000]
+
+for i in sizes:
+    num_range = 800             # base range of data point cordinates
+    total_points = i          # total number of data points
+    noise = 100                  # data points that are not generated near a blob_center
+    K = 10                      # number of blobs
+    N = total_points - noise    # data points to be generated near blob_center
+>>>>>>> f8191abc87fb4669548f1e0ea0621d8e4963eec9
 
 blob_center = []               # list of K blob centers, each having 3 dimentions
 for i in range(K):
@@ -55,9 +68,15 @@ X = shuffle(X)
 # X, y = make_blobs(n_samples=N, centers=K, n_features=3, random_state=0)
 
 
+<<<<<<< HEAD
 # Save the array of data points in file as per the format
 filename = "dataset_" + str(total_points) + "_" + str(K) + ".txt"
 np.savetxt(filename, X, fmt="%d", header=str(total_points), comments='')
+=======
+    # Save the array of data points in file as per the format
+    filename = "./dataset/dataset_" + str(total_points) + "_" + str(K) + ".txt"
+    np.savetxt(filename, X, fmt="%d", header=str(total_points), comments='')
+>>>>>>> f8191abc87fb4669548f1e0ea0621d8e4963eec9
 
 # Shows 3D plot for visualization 
 fig = pyplot.figure()

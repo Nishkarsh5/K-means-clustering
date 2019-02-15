@@ -1,9 +1,8 @@
 #include "lab1_io.h"
 #include "lab1_omp.h"
-
+#include <omp.h>
 #include <stdlib.h>
 #include <time.h>
-#include <omp.h>
 
 /*
 	Arguments:
@@ -60,7 +59,6 @@ int main(int argc, char const *argv[])
 	// */
 	kmeans_omp(num_threads, N, K, data_points, &cluster_points, &centroids, &num_iterations);
 	end_time = omp_get_wtime();
-
 	// /*
 	// 	-- Pre-defined function --
 	// 	reads cluster_points and centroids and save it it appropriate files
@@ -68,8 +66,14 @@ int main(int argc, char const *argv[])
 	clusters_out (argv[4], N, cluster_points);
 	centroids_out (argv[5], K, num_iterations, centroids);
 
-	computation_time = ((double) (end_time - start_time));
-	printf("%lf\n", computation_time);
+	// computation_time = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+	computation_time = end_time - start_time;
+	printf("Time Taken: %lf \n", computation_time);
+	FILE *fout = fopen("time_omp.txt", "a");
+	
+	fprintf(fout, "%f\n", computation_time); 
+
+	fclose(fout);
 	
 	return 0;
 }

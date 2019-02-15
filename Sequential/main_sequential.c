@@ -1,9 +1,10 @@
 #include "lab1_io.h"
 #include "lab1_sequential.h"
 
+#include <omp.h>
+
 #include <stdlib.h>
 #include <time.h>
-#include <omp.h>
 
 /*
 	Arguments:
@@ -66,7 +67,12 @@ int main(int argc, char const *argv[])
 	centroids_out (argv[4], K, num_iterations, centroids);
 
 	computation_time = ((double) (end_time - start_time));
-	printf("%lf\n", computation_time);
+	printf("Time Taken: %lf \n", computation_time);
+	FILE *fout = fopen("time_seq.txt", "a");
 	
+	fprintf(fout, "%f\n", computation_time); 
+
+
+	fclose(fout);
 	return 0;
 }
